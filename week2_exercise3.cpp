@@ -55,10 +55,10 @@ int main() {
     srand(2); //MODIFY THIS TO CHANGE THE READ PACKET TEST CASE
     CAN canbus; //usually this has parameters, but since this isn't real and we're running this on a standard compiler, it doesn't
     
-    int16_t angle = 0;
-    int16_t velocity = 0;
-    int16_t torque = 0;
-    int8_t temperature = 0; 
+    int16_t angle = 1300;
+    int16_t velocity = 2140;
+    int16_t torque = 382;
+    int8_t temperature = 10; 
     //test cases: angle, velocity, torque, temperature
     //test case 1: 1300, 2140, 382, 10
     //test case 2: 8000, -5000, -800, 90
@@ -66,7 +66,16 @@ int main() {
     
     
     //TODO: ENCODE THE DATA TO SEND TO THE MOTOR
-    uint8_t data_send[8] = {0,0,0,0,0,0,0,0};
+    uint8_t a = (angle >> 8) & 0xFF;
+    uint8_t b = angle & 0xFF;
+    uint8_t c = (velocity >> 8) & 0xFF;
+    uint8_t d = velocity & 0xFF;
+    uint8_t e = (torque >> 8) & 0xFF;
+    uint8_t f = torque & 0xFF;
+    uint8_t g = temperature;
+    uint8_t h = 0x00;
+    
+    uint8_t data_send[8] = {a,b,c,d,e,f,g,h};
     short len_send = 8;
     short id_send = 0x1FF;
     
@@ -80,6 +89,16 @@ int main() {
     
     //We pass in an array (data_recv) and it is filled in the can read function, as well as the id we recieve from and the length of the packet.
     canbus.readPacket(&id_recv, data_recv, &len_recv);
+    
+    int16_t angleR = data_recv[0];
+    angleR = (angleR << 8) | data_recv[1];
+    int16_t velocityR = data_recv[2];
+    velocityR = (velocityR << 8) | data_recv[3];
+    int16_t torqueR = data_recv[4];
+    torqueR = (torqueR << 8) | data_recv[5];
+    int8_t tempR = data_recv[6];
+    
+    printf("Angle: %d, Velocity: %d, Torque: %d, Temp: %d", angleR, velocityR, torqueR, tempR);
     
     //TODO: DECODE THE DATA RECIEVED BY THE MOTOR, YOU SHOULD GET DIFFERENT DATA DEPENDING ON SRAND
     // srand(0): 1383, -5114, 27, 85
