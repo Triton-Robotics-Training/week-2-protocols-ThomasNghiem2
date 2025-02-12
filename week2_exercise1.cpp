@@ -29,6 +29,16 @@ char numberToLetter(char i){
 int main(void)
 {
     //CODE GOES HERE 
-
+    for(int i = 0; i < BUFFER_SIZE; i += offset) {
+        char c = inputString[i];
+        int num = letterToNumber(c);
+        if(c == 'z') {
+            num -= 25;
+        } else {
+            num++;
+        }
+        char add = numberToLetter(num);
+        putc(add);
+    }
     putc('\n');
 }
