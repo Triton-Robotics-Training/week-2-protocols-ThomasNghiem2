@@ -45,6 +45,30 @@ void putc_bin(char c){
 int main(void)
 {
     //CODE GOES HERE 
+    for(int i = 0; i < BUFFER_SIZE; i += offset) {
+        char c = inputString[i];
+        
+        char bit765 = c >> 5;
+        bit765 = bit765 & 0x07;
+        char bit4 = c >> 4;
+        bit4 = bit4 & 0x01;
+        char bit3 = c >> 3;
+        bit3 = ~bit3;
+        bit3 = bit3 & 0x01;
+        char bit21 = c >> 1;
+        bit21 = ~bit21;
+        bit21 = bit21 & 0x03;
+        char bit0 = c;
+        bit0 = bit0 & 0x01;
+        
+        bit4 = bit4 << 5;
+        bit3 = bit3 << 4;
+        bit21 = bit21 << 6;
+        bit0 = bit0 << 3;
+        
+        char final = bit765 | bit4 | bit3 | bit21 | bit0;
+        putc(final);
+    }
 
     putc('\n');
 }
